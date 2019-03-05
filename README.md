@@ -21,30 +21,20 @@ Following [Docker for Windows](https://docs.docker.com/docker-for-windows/) to i
 
 ## Running
 Running is based on the steps:
-1. Create user-defined net work on Docker
-2. creating and running Cassandra image
-3. creating and running digit recognizing image
-4. submit digit photo on browser to predict handwriting number. 
+1. creating and running Cassandra image
+2. creating and running digit recognizing image
+3. submit digit photo on browser to predict handwriting number. 
 
-### 1. Create user-defined net work on Docker
-Use command below to define the network name as my-net which will be used by following steps. This allows containerized applications to communicate with each other easily, without accidentally opening access to the outside world. 
-
-```$ docker network create my-net```
-
-### 2. creating and running Cassandra image
+### 1. creating and running Cassandra image
 The easiest way is to cd to the directory where this project files are located. Then run:
 
 ```$ docker-compose up -d```
 
-to create a Cassandra image. 
-After creating Cassandra database image, it is time to run the database container. You can use the cqlsh tool included in container to check your key space using the following commands:
+to run a Cassandra container. 
 
-```$ docker exec -it cassandratable cqlsh```
+### 2. creating and running digit recognizing image
 
-
-### 3. creating and running digit recognizing image
-
-Now, opening a new terminal window and cd to the directory where this project files are located. Then run:
+After running Cassandra, it is time to build application! Then run:
 
 ```$ docker build --tag=predict:1.0 .``` 
 
@@ -52,11 +42,11 @@ this command will build an application image from Dockerfile. You can change the
 
 It will take you a few minutes to build an image. After building up, then run: 
 
-```$ docker run -p 8000:8000 --network=my-net -itd --name=predict1.0 predict:1.0```
+```$ docker run -p 8000:8000 --network=digitpredict-master_mnist --ip 156.167.0.15 predict:1.0```
 
-This command will run the container upon the image you created above on Port 8000. Note: you cannont change the network's name, but you can change the container's name as you want. (In this example, predict1.0 is container's name)
+This command will run the container upon the image you created above on Port 8000. 
 
-### 4. submit digit photo on browser to predict handwriting number. 
+### 3. submit digit photo on browser to predict handwriting number. 
 
 You can check the Port that the predict1.0 is running on by using the command: 
 
@@ -67,6 +57,10 @@ in this example, predict1.0 is running on 0.0.0.0:8000
 Copy and past 0.0.0.0:8000 as URL into browser, then you will see the webpage that you can submit handwriting digit. The result will show on the webpage. 
 
 Note:  Digit photo has to be black text on a white background. 
+
+It is time to check the Cassandra database. You can use the cqlsh tool included in container to check your key space using the following commands:
+
+```$ docker exec -it cassandratable cqlsh```
 
 You can check the predict result in Cassandra that you created before by using cqlsh command:
 
