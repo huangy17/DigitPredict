@@ -1,0 +1,40 @@
+version: '2'
+services:
+
+###############################
+#   cassandradata:
+#    image: cassandra
+#    container_name: cassandradata
+#    ports:
+#     - 9142:9042
+#     - 0000:7199
+
+   cassandratable:
+    image: cassandra
+    container_name: cassandratable
+    ports:
+     - 9042:9042
+    expose:
+            # Intra-node communication
+            - 8000
+            # TLS intra-node communication
+            - 7001
+            # JMX
+            - 7199
+            # CQL
+            - 9042
+            # Thrift service
+            - 9160
+    networks:
+       mnist:
+          ipv4_address: 156.167.0.10
+
+
+
+networks:
+    mnist:
+        driver: bridge
+        ipam:
+          config:
+            - subnet: 156.167.0.0/16
+              gateway: 156.167.0.1
